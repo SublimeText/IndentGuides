@@ -1,5 +1,6 @@
 import sublime
 import sublime_plugin
+import indentation
 
 #if you want the guides drawn, add this to your user file preferences:
 #  "show_indent_guides": true
@@ -20,15 +21,25 @@ class IndentGuidesListener(sublime_plugin.EventListener):
     if not view.settings().get("show_indent_guides"):
       view.add_regions("IndentGuidesListener", [], "comment", sublime.DRAW_EMPTY)
       return
-    
-    spaces_per_tab = int(view.settings().get("tab_size"))
+    tab_size = indentation.get_tab_size(view)
     flush_guides = int(bool(view.settings().get("indent_guides_flush_with_text")))
-    all_indents = view.find_all("^(" + (" " * spaces_per_tab) + ")*")
+    indent_regions = view.find_all(r"^(( )|(\t))+")
     regions = []
-    for spaces in all_indents:
-      for i in range(0, len(spaces)/spaces_per_tab + flush_guides):
-        tab_location = spaces.begin() + spaces_per_tab * i
-        regions.append(sublime.Region(tab_location,tab_location))
+    for indent_region in indent_regions:
+      pos = 0 
+      for pt in xrange(indent_region.begin(), indent_region.end()):
+        ch = view.substr(pt)
+        if pos % tab_size == 0:
+          loc = pt
+          regions.append(sublime.Region(loc,loc))
+        if ch == '\t':
+            pos += tab_size - (pos % tab_size)
+        elif ch.isspace():
+            pos += 1 
+        else:
+            pos+=1
+      if(flush_guides):
+        regions.append(sublime.Region(indent_region.end(),indent_region.end()))
     view.add_regions("IndentGuidesListener", regions, "comment", sublime.DRAW_EMPTY)
   
   def on_load(self, view):
