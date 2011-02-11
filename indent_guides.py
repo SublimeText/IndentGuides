@@ -11,12 +11,6 @@ import re
 #  "indent_guides_flush_with_text": true
 
 
-def lines_in_buffer(view):
-  #todo: maybe this is wrong? do i need size - 1?
-  row, col = view.rowcol(view.size())
-  #"row" is the index of the last row; need to add 1 to get number of rows
-  return row + 1
-
 class IndentGuidesListener(sublime_plugin.EventListener):
   def bust_it_out(self, view, whole_file=False):
     if not view.settings().get("show_indent_guides"):
