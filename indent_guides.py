@@ -10,11 +10,34 @@ import re
 #to your user file preferences:
 #  "indent_guides_flush_with_text": true
 
+#Normally the color of the guides is the same as the color of comments
+#in your code. If you'd like to customize the color, add this to your
+#theme file and change EDF2E9 to whatever color you want, then change
+#the scope variable, below, from "comment" to "guide".
+#(thanks to theblacklion)
+#---ADD TEXT BELOW THIS LINE TO YOUR THEME FILE---
+#       <dict>
+#          <key>name</key>
+#          <string>Guide</string>
+#          <key>scope</key>
+#          <string>guide</string>
+#          <key>settings</key>
+#          <dict>
+#             <key>fontStyle</key>
+#             <string>italic</string>
+#             <key>foreground</key>
+#             <string>#EDF2E9</string>
+#          </dict>
+#       </dict>
+#---ADD TEXT ABOVE THIS LINE TO YOUR THEME FILE---
+scope = "comment"
+
+
 
 class IndentGuidesListener(sublime_plugin.EventListener):
   def bust_it_out(self, view, whole_file=False):
     if not view.settings().get("show_indent_guides"):
-      view.add_regions("IndentGuidesListener", [], "comment", sublime.DRAW_EMPTY)
+      view.add_regions("IndentGuidesListener", [], scope, sublime.DRAW_EMPTY)
       return
     tab_size = indentation.get_tab_size(view)
     flush_guides = int(bool(view.settings().get("indent_guides_flush_with_text")))
@@ -50,7 +73,7 @@ class IndentGuidesListener(sublime_plugin.EventListener):
             pos+=1
       if(flush_guides):
         regions.append(sublime.Region(indent_region.end(),indent_region.end()))
-    view.add_regions("IndentGuidesListener", regions, "comment", sublime.DRAW_EMPTY)
+    view.add_regions("IndentGuidesListener", regions, scope, sublime.DRAW_EMPTY)
   
   def on_load(self, view):
     self.bust_it_out(view, whole_file=True)
