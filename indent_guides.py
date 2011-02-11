@@ -9,7 +9,6 @@ import re
 #if you want your guides to be drawn all the way up to the text, add this
 #to your user file preferences:
 #  "indent_guides_flush_with_text": true
-#you'll have to reload your files to get the whole thing to update
 
 
 def lines_in_buffer(view):
@@ -64,4 +63,6 @@ class IndentGuidesListener(sublime_plugin.EventListener):
   def on_activated(self, view):
     self.bust_it_out(view, whole_file=True)
   def on_modified(self, view):
-    self.bust_it_out(view)
+    #we still need to do the whole file here because doing things like pasting
+    #a block of code won't make the indent guides show up correctly
+    self.bust_it_out(view, whole_file=True)
