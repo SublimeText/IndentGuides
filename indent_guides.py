@@ -17,13 +17,13 @@ PLACEMENT OPTIONS
     plugin, add this to your user file preferences with any number you like.
 
 COLOR OPTIONS
-  "indent_guides_color_scope_name" : guide
+  "indent_guides_color_scope_name" : "guide"
     Normally the color of the guides is the same as the color of comments
-    in your code. If you'd like to customize the color, add this to your
-    theme file and change EDF2E9 to whatever color you want, then add this
-    to your user file preferences:
+    in your code. If you'd like to customize the color, add the below to your
+    color scheme file and change EDF2E9 to whatever color you want, then add
+    this to your user file preferences.
     (thanks to theblacklion)
----ADD TEXT BELOW THIS LINE TO YOUR THEME FILE---
+---ADD TEXT BELOW THIS LINE TO YOUR COLOR SCHEME FILE---
       <dict>
           <key>name</key>
           <string>Guide</string>
@@ -31,13 +31,11 @@ COLOR OPTIONS
           <string>guide</string>
           <key>settings</key>
           <dict>
-            <key>fontStyle</key>
-            <string>italic</string>
             <key>foreground</key>
             <string>#EDF2E9</string>
          </dict>
       </dict>
----ADD TEXT ABOVE THIS LINE TO YOUR THEME FILE---
+---ADD TEXT ABOVE THIS LINE TO YOUR COLOR SCHEME FILE---
 """
 
 import sublime
@@ -113,7 +111,7 @@ class IndentGuidesListener(sublime_plugin.EventListener):
     guides = self.get_current_guides(view, whole_file)
     guides = self.update_guides(view, regions_of_interest, guides)
     
-    color_scope_name = settings.get('indent_guides_color_name', DEFAULT_COLOR_SCOPE_NAME)
+    color_scope_name = settings.get('indent_guides_color_scope_name', DEFAULT_COLOR_SCOPE_NAME)
     view.add_regions("IndentGuidesListener", guides, color_scope_name, sublime.DRAW_EMPTY)
   
   def on_load(self, view):
