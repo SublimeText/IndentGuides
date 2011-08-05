@@ -7,10 +7,10 @@ PLACEMENT OPTIONS
 	"indent_guides_flush_with_text": true
 		if you want your guides to be drawn all the way up to the text, add this
 		to your user file preferences.
- 
+
 	"indent_guides_flush_with_gutter": true
 		if you want your guides to be drawn all the way to the gutter, add this
-		to your user file prefernces.
+		to your user file preferences.
 
 	"indent_guides_max_file_characters": 524288
 		if you want to limit the size of files that will be processed by this
@@ -83,7 +83,7 @@ class IndentGuidesListener(sublime_plugin.EventListener):
 		flush_with_gutter = bool(view.settings().get("indent_guides_flush_with_gutter"))
 		
 		for roi in regions_of_interest:
-			pos = 0 
+			pos = 0
 			for pt in xrange(roi.begin(), roi.end()):
 				ch = view.substr(pt)
 				if pos % tab_size == 0 and (flush_with_gutter or pos != 0):
@@ -92,7 +92,7 @@ class IndentGuidesListener(sublime_plugin.EventListener):
 				if ch == '\t':
 						pos += tab_size - (pos % tab_size)
 				elif ch.isspace():
-						pos += 1 
+						pos += 1
 				else:
 						pos+=1
 			if flush_with_text and pos % tab_size == 0:
