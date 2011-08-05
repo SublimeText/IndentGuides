@@ -1,8 +1,4 @@
 """
-ENABLING GUIDES
-	"show_indent_guides": true
-		if you want the guides drawn, add this to your user file preferences.
-
 PLACEMENT OPTIONS
 	"indent_guides_flush_with_text": true
 		if you want your guides to be drawn all the way up to the text, add this
@@ -46,7 +42,21 @@ import re
 DEFAULT_COLOR_SCOPE_NAME = "comment"
 DEFAULT_MAX_FILE_CHARACTERS = 524288
 
+def unload_handler():
+	print("unloaded")
+	for window in sublime.windows():
+		for view in window.views():
+			view.erase_regions('IndentGuidesListener')
+
 class IndentGuidesListener(sublime_plugin.EventListener):
+	def __init__(self):
+		#Files don't get their guides redrawn until they're activated or loaded,
+		#so let's generate guides for the front file.
+		#Views in other groups won't have their guides refreshed, but I don't
+		#believe it's possible to find the active view in another group without
+		#switching to that view.
+		self.refresh(sublime.active_window().active_view(), whole_file=True)
+	
 	def find_regions_of_interest(self, view, whole_file):
 		find_str = r"^(( )|(\t))+"
 		if whole_file:
@@ -102,8 +112,7 @@ class IndentGuidesListener(sublime_plugin.EventListener):
 	def refresh(self, view, whole_file=False):
 		settings = view.settings()
 		
-		if (not settings.get("show_indent_guides")
-				or not self.file_is_small_enough(view)):
+		if (not self.file_is_small_enough(view)):
 			view.erase_regions('IndentGuidesListener')
 			return
 		
