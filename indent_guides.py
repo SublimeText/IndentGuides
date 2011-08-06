@@ -1,24 +1,23 @@
 """
 PLACEMENT OPTIONS
-	"indent_guides_flush_with_text": true
-		if you want your guides to be drawn all the way up to the text, add this
-		to your user file preferences.
+	"flush_with_text": true
+		if you want your guides to be drawn all the way up to the text, add this to
+		your user file preferences.
 
-	"indent_guides_flush_with_gutter": true
-		if you want your guides to be drawn all the way to the gutter, add this
-		to your user file preferences.
+	"flush_with_gutter": true
+		if you want your guides to be drawn all the way to the gutter, add this to
+		your user file preferences.
 
-	"indent_guides_max_file_characters": 524288
+	"max_file_characters": 524288
 		if you want to limit the size of files that will be processed by this
 		plugin, add this to your user file preferences with any number you like.
 
 COLOR OPTIONS
-	"indent_guides_color_scope_name" : "guide"
-		Normally the color of the guides is the same as the color of comments
-		in your code. If you'd like to customize the color, add the below to your
-		color scheme file and change EDF2E9 to whatever color you want, then add
-		this to your user file preferences.
-		(thanks to theblacklion)
+	"color_scope_name" : "guide"
+		Normally the color of the guides is the same as the color of comments in
+		your code. If you'd like to customize the color, add the below to your color
+		scheme file and change EDF2E9 to whatever color you want, then add this to
+		your user file preferences. (thanks to theblacklion)
 ---ADD TEXT BELOW THIS LINE TO YOUR COLOR SCHEME FILE---
 			<dict>
 					<key>name</key>
@@ -81,7 +80,8 @@ class IndentGuidesListener(sublime_plugin.EventListener):
 		return guides
 	
 	def file_is_small_enough(self, view):
-		max_size = view.settings().get('indent_guides_max_file_characters')
+		settings = sublime.load_settings('Indent Guides.sublime-settings')
+		max_size = settings.get('max_file_characters')
 		max_size = long(max_size or DEFAULT_MAX_FILE_CHARACTERS)
 		if view.size() > max_size:
 			return False
@@ -89,8 +89,10 @@ class IndentGuidesListener(sublime_plugin.EventListener):
 	
 	def update_guides(self, view, regions_of_interest, guides):
 		tab_size = indentation.get_tab_size(view)
-		flush_with_text = int(bool(view.settings().get("indent_guides_flush_with_text")))
-		flush_with_gutter = bool(view.settings().get("indent_guides_flush_with_gutter"))
+		
+		settings = sublime.load_settings('Indent Guides.sublime-settings')
+		flush_with_text = int(bool(settings.get('flush_with_text')))
+		flush_with_gutter = bool(settings.get('flush_with_gutter'))
 		
 		for roi in regions_of_interest:
 			pos = 0
@@ -110,8 +112,6 @@ class IndentGuidesListener(sublime_plugin.EventListener):
 		return guides
 	
 	def refresh(self, view, whole_file=False):
-		settings = view.settings()
-		
 		if (not self.file_is_small_enough(view)):
 			view.erase_regions('IndentGuidesListener')
 			return
@@ -120,7 +120,8 @@ class IndentGuidesListener(sublime_plugin.EventListener):
 		guides = self.get_current_guides(view, whole_file)
 		guides = self.update_guides(view, regions_of_interest, guides)
 		
-		color_scope_name = settings.get('indent_guides_color_scope_name', DEFAULT_COLOR_SCOPE_NAME)
+		settings = sublime.load_settings('Indent Guides.sublime-settings')
+		color_scope_name = settings.get('color_scope_name', DEFAULT_COLOR_SCOPE_NAME)
 		view.add_regions("IndentGuidesListener", guides, color_scope_name, sublime.DRAW_EMPTY)
 	
 	def on_load(self, view):
