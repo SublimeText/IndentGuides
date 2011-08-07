@@ -1,0 +1,6 @@
+{
+	"flush_with_text": false,
+	"flush_with_gutter": true,
+	"max_file_characters": 524288,
+	"color_scope_name" : "comment"
+}
