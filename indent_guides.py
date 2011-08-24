@@ -42,7 +42,6 @@ DEFAULT_COLOR_SCOPE_NAME = "comment"
 DEFAULT_MAX_FILE_CHARACTERS = 524288
 
 def unload_handler():
-	print("unloaded")
 	for window in sublime.windows():
 		for view in window.views():
 			view.erase_regions('IndentGuidesListener')
@@ -84,6 +83,7 @@ class IndentGuidesListener(sublime_plugin.EventListener):
 		max_size = settings.get('max_file_characters')
 		max_size = long(max_size or DEFAULT_MAX_FILE_CHARACTERS)
 		if view.size() > max_size:
+			print(__name__+": "+view.file_name()+" too long to process")
 			return False
 		return True
 	
